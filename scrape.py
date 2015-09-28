@@ -16,18 +16,20 @@ def HistoricData(symbol, timestart, timeend):
     """
     
     url = ('http://real-chart.finance.yahoo.com/table.csv?s=' + symbol +
-           "&a=%0d&b=%d&c=%d&d=08&e=6&f=2015&g=d&ignore=.csv" % (timestart.month - 1, timestart.day, timestart.year) +
-           "&d=%0d&e=%d&f=%d&g=d&ignore=.csv" % (timestart.month - 1, timestart.day, timestart.year))
+           "&a=%0d&b=%d&c=%d" % (timestart.month - 1, timestart.day, timestart.year) +
+           "&d=%0d&e=%d&f=%d&g=d&ignore=.csv" % (timeend.month - 1, timeend.day, timeend.year))
     htmlfile = urllib.urlopen(url)
     htmltext = htmlfile.read()
     lines = htmltext.split('\n')
     dates = []
     values = []
-    for line in lines[1:]:
-        pieces = line[0].split('-')
-        d = datetime.date(pieces[0], pieces[1], pieces[2])
+    for line in lines[1:-1]:
+        print 'line <', line, '>'
+        pieces = line.split(',')
+        date_pieces = [int(x) for x in pieces[0].split('-')]
+        d = datetime.date(date_pieces[0], date_pieces[1], date_pieces[2])
         dates.append(d)
-        values.append(line[1:])
+        values.append(pieces[1:])
     return (dates, values)
 
 
